@@ -44,7 +44,7 @@
                         
                         <div class="col-md-6">
                             <h5>Atualizar Status</h5>
-                            <form method="POST" action="{{ url_for('detalhes_pedido', pedido_id=pedido.id) }}">
+                            <form method="POST" action="{{ url_for('main.detalhes_pedido', pedido_id=pedido.id) }}">
                                 {{ form.hidden_tag() }}
                                 <div class="mb-3">
                                     {{ form.status.label(class="form-label") }}

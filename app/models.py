@@ -12,6 +12,7 @@ class Cliente(db.Model):
     limite_credito = db.Column(db.Float, default=0.0)
     area_atuacao = db.Column(db.String(100))
     canal_vendas = db.Column(db.String(50))
+    endereco = db.Column(db.String(200))  # <--- novo campo
     data_cadastro = db.Column(db.DateTime, default=datetime.utcnow)
     ultimo_contato = db.Column(db.Date, nullable=True)
     ativo = db.Column(db.Boolean, default=True)

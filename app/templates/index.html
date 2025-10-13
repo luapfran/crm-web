@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1><i class="bi bi-speedometer2"></i> Dashboard</h1>
+
+<div class="row g-3 mt-3">
+    <!-- Card Clientes - Clicável -->
+    <div class="col-md-4">
+        <a href="{{ url_for('main.listar_clientes') }}" class="text-decoration-none">
+            <div class="card text-white bg-primary h-100" style="cursor: pointer; transition: transform 0.2s;">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="card-title mb-1">Total de Clientes</h5>
+                            <h2 class="mb-0">{{ total_clientes }}</h2>
+                        </div>
+                        <i class="bi bi-people display-4 opacity-50"></i>
+                    </div>
+                    <small class="mt-2 d-block">Clique para ver todos</small>
+                </div>
+            </div>
+        </a>
+    </div>
+    
+    <!-- Card Cotações - Clicável -->
+    <div class="col-md-4">
+        <a href="{{ url_for('main.listar_cotacoes') }}" class="text-decoration-none">
+            <div class="card text-white bg-success h-100" style="cursor: pointer; transition: transform 0.2s;">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="card-title mb-1">Total de Cotações</h5>
+                            <h2 class="mb-0">{{ total_cotacoes }}</h2>
+                        </div>
+                        <i class="bi bi-file-text display-4 opacity-50"></i>
+                    </div>
+                    <small class="mt-2 d-block">Clique para ver todas</small>
+                </div>
+            </div>
+        </a>
+    </div>
+    
+    <!-- Card Pedidos - Clicável -->
+    <div class="col-md-4">
+        <a href="{{ url_for('main.listar_pedidos') }}" class="text-decoration-none">
+            <div class="card text-white bg-info h-100" style="cursor: pointer; transition: transform 0.2s;">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 class="card-title mb-1">Total de Pedidos</h5>
+                            <h2 class="mb-0">{{ total_pedidos }}</h2>
+                        </div>
+                        <i class="bi bi-cart display-4 opacity-50"></i>
+                    </div>
+                    <small class="mt-2 d-block">Clique para ver todos</small>
+                </div>
+            </div>
+        </a>
+    </div>
+</div>
+
+<!-- Cards de Alertas -->
+<div class="row g-3 mt-4 mb-4">
+    <div class="col-md-4">
+        <div class="card border-warning">
+            <div class="card-body">
+                <h5 class="card-title"><i class="bi bi-exclamation-triangle text-warning"></i> Cotações Enviadas</h5>
+                <h3>{{ cotacoes_enviadas }}</h3>
+                <p class="text-muted">Aguardando resposta do cliente</p>
+                <a href="{{ url_for('main.listar_cotacoes', status='Enviada') }}" class="btn btn-sm btn-warning">Ver Todas</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card border-danger">
+            <div class="card-body">
+                <h5 class="card-title"><i class="bi bi-clock text-danger"></i> Pedidos Pendentes</h5>
+                <h3>{{ pedidos_pendentes }}</h3>
+                <p class="text-muted">Aguardando processamento</p>
+                <a href="{{ url_for('main.listar_pedidos', status='Pendente') }}" class="btn btn-sm btn-danger">Ver Todos</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card border-success">
+            <div class="card-body">
+                <h5 class="card-title"><i class="bi bi-check-circle text-success"></i> Cotações Aprovadas</h5>
+                <h3>{{ cotacoes_aprovadas }}</h3>
+                <p class="text-muted">Convertidas em pedidos</p>
+                <a href="{{ url_for('main.listar_cotacoes', status='Aprovada') }}" class="btn btn-sm btn-success">Ver Todas</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Botões de Ação Rápida -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body text-center">
+                <h5 class="card-title mb-3">Ações Rápidas</h5>
+                <a href="{{ url_for('main.novo_cliente') }}" class="btn btn-primary me-2">
+                    <i class="bi bi-person-plus"></i> Novo Cliente
+                </a>
+                <a href="{{ url_for('main.listar_clientes') }}" class="btn btn-secondary me-2">
+                    <i class="bi bi-people"></i> Ver Clientes
+                </a>
+                <a href="{{ url_for('main.listar_cotacoes') }}" class="btn btn-success me-2">
+                    <i class="bi bi-file-text"></i> Ver Cotações
+                </a>
+                <a href="{{ url_for('main.listar_pedidos') }}" class="btn btn-info">
+                    <i class="bi bi-cart"></i> Ver Pedidos
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Efeito hover nos cards clicáveis */
+a .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0.5rem 1rem rgba(0,0,0,.25) !important;
+}
+</style>
+{% endblock %}

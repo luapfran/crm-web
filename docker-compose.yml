@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: crm_postgres
+    environment:
+      POSTGRES_USER: crm_user
+      POSTGRES_PASSWORD: crm_password
+      POSTGRES_DB: crm_database
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - crm_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U crm_user"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  web:
+    build: .
+    container_name: crm_web
+    command: python run.py
+    volumes:
+      - .:/app
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_ENV=development
+      - DATABASE_URL=postgresql://crm_user:crm_password@db:5432/crm_database
+      - SECRET_KEY=sua-chave-secreta-aqui-mude-em-producao
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - crm_network
+    restart: unless-stopped
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: crm_pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@crm.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    networks:
+      - crm_network
+    depends_on:
+      - db
+
+volumes:
+  postgres_data:
+
+networks:
+  crm_network:
+    driver: bridge

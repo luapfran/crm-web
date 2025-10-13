@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+
+{% block title %}Cotações - Sistema CRM{% endblock %}
+
+{% block content %}
+<div class="row mb-3">
+    <div class="col-md-8">
+        <h1><i class="bi bi-file-text"></i> Cotações</h1>
+        <p class="text-muted">Gerencie todas as cotações enviadas aos clientes</p>
+    </div>
+    <div class="col-md-4 text-end">
+        <a href="{{ url_for('main.listar_clientes') }}" class="btn btn-success btn-lg">
+            <i class="bi bi-plus-circle"></i> Nova Cotação
+        </a>
+        <p class="text-muted small mt-1 mb-0">Selecione um cliente para criar cotação</p>
+    </div>
+</div>
+
+<!-- Filtros -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="get" action="{{ url_for('main.listar_cotacoes') }}">
+            <div class="row">
+                <div class="col-md-4">
+                    <label class="form-label">Filtrar por Status:</label>
+                    <select name="status" class="form-select" onchange="this.form.submit()">
+                        <option value="">Todos</option>
+                        <option value="Enviada" {% if status == 'Enviada' %}selected{% endif %}>Enviada</option>
+                        <option value="Aprovada" {% if status == 'Aprovada' %}selected{% endif %}>Aprovada</option>
+                        <option value="Recusada" {% if status == 'Recusada' %}selected{% endif %}>Recusada</option>
+                    </select>
+                </div>
+                <div class="col-md-8 d-flex align-items-end">
+                    {% if status %}
+                    <a href="{{ url_for('main.listar_cotacoes') }}" class="btn btn-secondary">
+                        <i class="bi bi-x"></i> Limpar Filtros
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Lista de Cotações -->
+<div class="card">
+    <div class="card-body">
+        {% if cotacoes.items %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>ID Cotação</th>
+                        <th>Cliente</th>
+                        <th>Data</th>
+                        <th>Valor Total</th>
+                        <th>Validade</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cotacao in cotacoes.items %}
+                    <tr>
+                        <td><code>{{ cotacao.id_cotacao }}</code></td>
+                        <td>
+                            <a href="{{ url_for('main.detalhes_cliente', id=cotacao.cliente_id) }}">
+                                {{ cotacao.cliente.nome }}
+                            </a>
+                        </td>
+                        <td>{{ cotacao.data_criacao.strftime('%d/%m/%Y') }}</td>
+                        <td><strong>R$ {{ "%.2f"|format(cotacao.valor_total) }}</strong></td>
+                        <td>
+                            {% if cotacao.validade %}
+                                {{ cotacao.validade.strftime('%d/%m/%Y') }}
+                            {% else %}
+                                <span class="text-muted">-</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if cotacao.status == 'Enviada' %}
+                                <span class="badge bg-warning text-dark">{{ cotacao.status }}</span>
+                            {% elif cotacao.status == 'Aprovada' %}
+                                <span class="badge bg-success">{{ cotacao.status }}</span>
+                            {% else %}
+                                <span class="badge bg-danger">{{ cotacao.status }}</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{{ url_for('main.detalhes_cliente', id=cotacao.cliente_id) }}" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-eye"></i> Ver Cliente
+                            </a>
+                            {% if cotacao.status == 'Enviada' %}
+                            <form method="POST" action="{{ url_for('main.converter_cotacao_pedido', id=cotacao.id) }}" class="d-inline">
+                                <button type="submit" class="btn btn-sm btn-success" onclick="return confirm('Converter esta cotação em pedido?')">
+                                    <i class="bi bi-arrow-right"></i> Converter
+                                </button>
+                            </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Paginação -->
+        {% if cotacoes.pages > 1 %}
+        <nav>
+            <ul class="pagination justify-content-center mt-3">
+                <li class="page-item {% if not cotacoes.has_prev %}disabled{% endif %}">
+                    <a class="page-link" href="{{ url_for('main.listar_cotacoes', page=cotacoes.prev_num, status=status) if cotacoes.has_prev else '#' }}">Anterior</a>
+                </li>
+                
+                {% for page_num in cotacoes.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+                    {% if page_num %}
+                        <li class="page-item {% if page_num == cotacoes.page %}active{% endif %}">
+                            <a class="page-link" href="{{ url_for('main.listar_cotacoes', page=page_num, status=status) }}">{{ page_num }}</a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                    {% endif %}
+                {% endfor %}
+                
+                <li class="page-item {% if not cotacoes.has_next %}disabled{% endif %}">
+                    <a class="page-link" href="{{ url_for('main.listar_cotacoes', page=cotacoes.next_num, status=status) if cotacoes.has_next else '#' }}">Próxima</a>
+                </li>
+            </ul>
+        </nav>
+        {% endif %}
+        {% else %}
+        <div class="text-center py-5">
+            <i class="bi bi-file-text display-1 text-muted"></i>
+            <h3 class="mt-3">Nenhuma cotação encontrada</h3>
+            <p class="text-muted">
+                {% if status %}
+                    Nenhuma cotação com status "{{ status }}".
+                {% else %}
+                    As cotações aparecem aqui quando criadas para os clientes.
+                {% endif %}
+            </p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

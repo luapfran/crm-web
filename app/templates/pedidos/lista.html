@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+
+{% block title %}Pedidos - Sistema CRM{% endblock %}
+
+{% block content %}
+<div class="row mb-3">
+    <div class="col-md-8">
+        <h1><i class="bi bi-cart"></i> Pedidos</h1>
+        <p class="text-muted">Acompanhe todos os pedidos e status de entrega</p>
+    </div>
+    <div class="col-md-4 text-end">
+        <a href="{{ url_for('main.novo_pedido') }}" class="btn btn-info btn-lg text-white">
+            <i class="bi bi-cart-plus"></i> Novo Pedido
+        </a>
+    </div>
+</div>
+
+<!-- Filtros -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="get" action="{{ url_for('main.listar_pedidos') }}">
+            <div class="row">
+                <div class="col-md-4">
+                    <label class="form-label">Filtrar por Status de Entrega:</label>
+                    <select name="status" class="form-select" onchange="this.form.submit()">
+                        <option value="">Todos</option>
+                        <option value="Pendente" {% if status == 'Pendente' %}selected{% endif %}>Pendente</option>
+                        <option value="Em processamento" {% if status == 'Em processamento' %}selected{% endif %}>Em processamento</option>
+                        <option value="Enviado" {% if status == 'Enviado' %}selected{% endif %}>Enviado</option>
+                        <option value="Entregue" {% if status == 'Entregue' %}selected{% endif %}>Entregue</option>
+                        <option value="Cancelado" {% if status == 'Cancelado' %}selected{% endif %}>Cancelado</option>
+                    </select>
+                </div>
+                <div class="col-md-8 d-flex align-items-end">
+                    {% if status %}
+                    <a href="{{ url_for('main.listar_pedidos') }}" class="btn btn-secondary">
+                        <i class="bi bi-x"></i> Limpar Filtros
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Lista de Pedidos -->
+<div class="card">
+    <div class="card-body">
+        {% if pedidos.items %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>ID Pedido</th>
+                        <th>Cliente</th>
+                        <th>Data do Pedido</th>
+                        <th>Valor Final</th>
+                        <th>Status de Entrega</th>
+                        <th>Entrega Prevista</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for pedido in pedidos.items %}
+                    <tr>
+                        <td><code>{{ pedido.id_pedido }}</code></td>
+                        <td>
+                            <a href="{{ url_for('main.detalhes_cliente', id=pedido.cliente_id) }}">
+                                {{ pedido.cliente.nome }}
+                            </a>
+                        </td>
+                        <td>{{ pedido.data_criacao.strftime('%d/%m/%Y') }}</td>
+                        <td><strong>R$ {{ "%.2f"|format(pedido.valor_final) }}</strong></td>
+                        <td>
+                            {% if pedido.status_entrega == 'Pendente' %}
+                                <span class="badge bg-warning text-dark">{{ pedido.status_entrega }}</span>
+                            {% elif pedido.status_entrega == 'Em processamento' %}
+                                <span class="badge bg-info">{{ pedido.status_entrega }}</span>
+                            {% elif pedido.status_entrega == 'Enviado' %}
+                                <span class="badge bg-primary">{{ pedido.status_entrega }}</span>
+                            {% elif pedido.status_entrega == 'Entregue' %}
+                                <span class="badge bg-success">{{ pedido.status_entrega }}</span>
+                            {% else %}
+                                <span class="badge bg-danger">{{ pedido.status_entrega }}</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if pedido.data_entrega_prevista %}
+                                {{ pedido.data_entrega_prevista.strftime('%d/%m/%Y') }}
+                            {% else %}
+                                <span class="text-muted">-</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{{ url_for('main.detalhes_pedido', id=pedido.id) }}" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-eye"></i> Ver Detalhes
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Paginação -->
+        {% if pedidos.pages > 1 %}
+        <nav>
+            <ul class="pagination justify-content-center mt-3">
+                <li class="page-item {% if not pedidos.has_prev %}disabled{% endif %}">
+                    <a class="page-link" href="{{ url_for('main.listar_pedidos', page=pedidos.prev_num, status=status) if pedidos.has_prev else '#' }}">Anterior</a>
+                </li>
+                
+                {% for page_num in pedidos.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+                    {% if page_num %}
+                        <li class="page-item {% if page_num == pedidos.page %}active{% endif %}">
+                            <a class="page-link" href="{{ url_for('main.listar_pedidos', page=page_num, status=status) }}">{{ page_num }}</a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                    {% endif %}
+                {% endfor %}
+                
+                <li class="page-item {% if not pedidos.has_next %}disabled{% endif %}">
+                    <a class="page-link" href="{{ url_for('main.listar_pedidos', page=pedidos.next_num, status=status) if pedidos.has_next else '#' }}">Próxima</a>
+                </li>
+            </ul>
+        </nav>
+        {% endif %}
+        {% else %}
+        <div class="text-center py-5">
+            <i class="bi bi-cart display-1 text-muted"></i>
+            <h3 class="mt-3">Nenhum pedido encontrado</h3>
+            <p class="text-muted">
+                {% if status %}
+                    Nenhum pedido com status "{{ status }}".
+                {% else %}
+                    Os pedidos são criados a partir das cotações aprovadas.
+                {% endif %}
+            </p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

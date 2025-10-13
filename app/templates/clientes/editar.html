@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block title %}Editar Cliente{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card">
+                <div class="card-header bg-warning text-dark">
+                    <h3 class="mb-0">Editar Cliente</h3>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('editar_cliente', cliente_id=cliente.id) }}">
+                        {{ form.hidden_tag() }}
+                        
+                        <div class="mb-3">
+                            {{ form.nome.label(class="form-label") }}
+                            {{ form.nome(class="form-control", value=cliente.nome) }}
+                            {% if form.nome.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.nome.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form.email.label(class="form-label") }}
+                            {{ form.email(class="form-control", value=cliente.email) }}
+                            {% if form.email.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.email.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form.telefone.label(class="form-label") }}
+                            {{ form.telefone(class="form-control", value=cliente.telefone) }}
+                            {% if form.telefone.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.telefone.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form.empresa.label(class="form-label") }}
+                            {{ form.empresa(class="form-control", value=cliente.empresa) }}
+                            {% if form.empresa.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.empresa.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form.endereco.label(class="form-label") }}
+                            {{ form.endereco(class="form-control", rows="3") }}{{ cliente.endereco }}{{ form.endereco() }}
+                            {% if form.endereco.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.endereco.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{{ url_for('clientes') }}" class="btn btn-secondary">Cancelar</a>
+                            <a href="{{ url_for('deletar_cliente', cliente_id=cliente.id) }}" 
+                               class="btn btn-danger"
+                               onclick="return confirm('Tem certeza que deseja excluir este cliente?')">Excluir</a>
+                            {{ form.submit(class="btn btn-warning", value="Atualizar") }}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

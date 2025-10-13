@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>{{ cliente.nome }}</h1>
+
+<div class="card mt-3">
+    <div class="card-body">
+        <p><strong>Email:</strong> {{ cliente.email }}</p>
+        <p><strong>Telefone:</strong> {{ cliente.telefone }}</p>
+        <p><strong>Área:</strong> {{ cliente.area_atuacao }}</p>
+        <p><strong>Canal:</strong> {{ cliente.canal_vendas }}</p>
+        <p><strong>Limite:</strong> R$ {{ "%.2f"|format(cliente.limite_credito) }}</p>
+    </div>
+</div>
+
+<a href="/clientes" class="btn btn-secondary mt-3">Voltar</a>
+{% endblock %}

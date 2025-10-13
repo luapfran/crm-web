@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+
+{% block title %}Lista de Clientes - Sistema CRM{% endblock %}
+
+{% block content %}
+<div class="row mb-3">
+    <div class="col-md-6">
+        <h1><i class="bi bi-people"></i> Clientes</h1>
+        <p class="text-muted">Gerencie seus clientes cadastrados</p>
+    </div>
+    <div class="col-md-6 text-end">
+        <a href="{{ url_for('main.novo_cliente') }}" class="btn btn-primary btn-lg">
+            <i class="bi bi-person-plus"></i> Novo Cliente
+        </a>
+    </div>
+</div>
+
+<!-- Barra de Pesquisa -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="get" action="{{ url_for('main.listar_clientes') }}">
+            <div class="input-group">
+                <input type="text" name="search" class="form-control" placeholder="Buscar por nome, email ou telefone..." value="{{ search }}">
+                <button class="btn btn-primary" type="submit">
+                    <i class="bi bi-search"></i> Buscar
+                </button>
+                {% if search %}
+                <a href="{{ url_for('main.listar_clientes') }}" class="btn btn-secondary">
+                    <i class="bi bi-x"></i> Limpar
+                </a>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Lista de Clientes -->
+<div class="card">
+    <div class="card-body">
+        {% if clientes.items %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nome</th>
+                        <th>Email</th>
+                        <th>Telefone</th>
+                        <th>Canal de Vendas</th>
+                        <th>Limite de Crédito</th>
+                        <th>Último Contato</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cliente in clientes.items %}
+                    <tr>
+                        <td>{{ cliente.id }}</td>
+                        <td>
+                            <strong>{{ cliente.nome }}</strong><br>
+                            <small class="text-muted">{{ cliente.area_atuacao }}</small>
+                        </td>
+                        <td>{{ cliente.email }}</td>
+                        <td>{{ cliente.telefone }}</td>
+                        <td>
+                            {% if cliente.canal_vendas == 'Revenda' %}
+                                <span class="badge bg-primary">{{ cliente.canal_vendas }}</span>
+                            {% elif cliente.canal_vendas == 'Indústria' %}
+                                <span class="badge bg-success">{{ cliente.canal_vendas }}</span>
+                            {% else %}
+                                <span class="badge bg-info">{{ cliente.canal_vendas }}</span>
+                            {% endif %}
+                        </td>
+                        <td>R$ {{ "%.2f"|format(cliente.limite_credito) }}</td>
+                        <td>
+                            {% if cliente.ultimo_contato %}
+                                {{ cliente.ultimo_contato.strftime('%d/%m/%Y') }}
+                            {% else %}
+                                <span class="text-muted">Nenhum</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{{ url_for('main.detalhes_cliente', id=cliente.id) }}" class="btn btn-sm btn-outline-primary" title="Ver Detalhes">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                            <a href="{{ url_for('main.editar_cliente', id=cliente.id) }}" class="btn btn-sm btn-outline-secondary" title="Editar">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Paginação -->
+        {% if clientes.pages > 1 %}
+        <nav>
+            <ul class="pagination justify-content-center">
+                <li class="page-item {% if not clientes.has_prev %}disabled{% endif %}">
+                    <a class="page-link" href="{{ url_for('main.listar_clientes', page=clientes.prev_num, search=search) if clientes.has_prev else '#' }}">Anterior</a>
+                </li>
+                
+                {% for page_num in clientes.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+                    {% if page_num %}
+                        <li class="page-item {% if page_num == clientes.page %}active{% endif %}">
+                            <a class="page-link" href="{{ url_for('main.listar_clientes', page=page_num, search=search) }}">{{ page_num }}</a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                    {% endif %}
+                {% endfor %}
+                
+                <li class="page-item {% if not clientes.has_next %}disabled{% endif %}">
+                    <a class="page-link" href="{{ url_for('main.listar_clientes', page=clientes.next_num, search=search) if clientes.has_next else '#' }}">Próxima</a>
+                </li>
+            </ul>
+        </nav>
+        {% endif %}
+        {% else %}
+        <div class="text-center py-5">
+            <i class="bi bi-inbox display-1 text-muted"></i>
+            <h3 class="mt-3">Nenhum cliente encontrado</h3>
+            <p class="text-muted">
+                {% if search %}
+                    Nenhum cliente encontrado para "{{ search }}".
+                {% else %}
+                    Comece cadastrando seu primeiro cliente!
+                {% endif %}
+            </p>
+            <a href="{{ url_for('main.novo_cliente') }}" class="btn btn-primary">
+                <i class="bi bi-person-plus"></i> Cadastrar Primeiro Cliente
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

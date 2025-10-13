@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+
+{% block title %}Novo Pedido - Sistema CRM{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <h1 class="mb-4"><i class="bi bi-cart-plus"></i> Novo Pedido</h1>
+        
+        <div class="card">
+            <div class="card-body">
+                <form method="POST" action="{{ url_for('main.novo_pedido') }}">
+                    {{ form.hidden_tag() }}
+                    
+                    <!-- Seleção de Cliente -->
+                    <div class="mb-3">
+                        <label for="cliente_id" class="form-label">Cliente *</label>
+                        <select name="cliente_id" id="cliente_id" class="form-select" required>
+                            <option value="">Selecione um cliente...</option>
+                            {% for cliente in clientes %}
+                            <option value="{{ cliente.id }}">{{ cliente.nome }} - {{ cliente.email }}</option>
+                            {% endfor %}
+                        </select>
+                        <small class="form-text text-muted">Selecione o cliente para este pedido</small>
+                    </div>
+                    
+                    <!-- Descrição dos Itens -->
+                    <div class="mb-3">
+                        {{ form.itens.label(class="form-label") }}
+                        {{ form.itens(class="form-control", rows="6", placeholder="Ex:\n- 10 unidades do Produto A\n- 5 unidades do Produto B\n- Serviço de instalação") }}
+                        {% if form.itens.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.itens.errors %}{{ error }}{% endfor %}
+                            </div>
+                        {% endif %}
+                        <small class="form-text text-muted">Liste todos os produtos/serviços deste pedido</small>
+                    </div>
+                    
+                    <!-- Valor Final -->
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            {{ form.valor_final.label(class="form-label") }}
+                            <div class="input-group">
+                                <span class="input-group-text">R$</span>
+                                {{ form.valor_final(class="form-control", step="0.01", placeholder="0.00") }}
+                            </div>
+                            {% if form.valor_final.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.valor_final.errors %}{{ error }}{% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Data de Entrega Prevista -->
+                        <div class="col-md-6 mb-3">
+                            {{ form.data_entrega_prevista.label(class="form-label") }}
+                            {{ form.data_entrega_prevista(class="form-control") }}
+                            {% if form.data_entrega_prevista.errors %}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.data_entrega_prevista.errors %}{{ error }}{% endfor %}
+                                </div>
+                            {% endif %}
+                            <small class="form-text text-muted">Data estimada de entrega (opcional)</small>
+                        </div>
+                    </div>
+                    
+                    <!-- Observações -->
+                    <div class="mb-3">
+                        {{ form.observacoes.label(class="form-label") }}
+                        {{ form.observacoes(class="form-control", rows="4", placeholder="Condições de pagamento, observações gerais...") }}
+                        {% if form.observacoes.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.observacoes.errors %}{{ error }}{% endfor %}
+                            </div>
+                        {% endif %}
+                        <small class="form-text text-muted">Informações adicionais sobre o pedido (opcional)</small>
+                    </div>
+                    
+                    <!-- Botões -->
+                    <div class="d-flex justify-content-between mt-4">
+                        <a href="{{ url_for('main.listar_pedidos') }}" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left"></i> Cancelar
+                        </a>
+                        {{ form.submit(class="btn btn-primary") }}
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Dica -->
+        <div class="alert alert-info mt-3">
+            <i class="bi bi-info-circle"></i> <strong>Dica:</strong> 
+            Você também pode criar pedidos a partir de cotações aprovadas na página de detalhes do cliente.
+        </div>
+    </div>
+</div>
+{% endblock %}

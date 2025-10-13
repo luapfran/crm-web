@@ -12,39 +12,39 @@
 -- TRUNCATE TABLE clientes RESTART IDENTITY CASCADE;
 
 -- =====================================================
--- INSERÇÃO DE CLIENTES
+-- INSERÇÃO DE CLIENTES (ATUALIZADO: inclui coluna 'endereco')
 -- =====================================================
 
-INSERT INTO clientes (nome, telefone, email, limite_credito, area_atuacao, canal_vendas, data_cadastro, ultimo_contato, ativo) VALUES
+INSERT INTO clientes (nome, telefone, email, limite_credito, area_atuacao, canal_vendas, endereco, data_cadastro, ultimo_contato, ativo) VALUES
 -- Cliente 1
-('Tech Solutions Ltda', '(11) 98765-4321', 'contato@techsolutions.com.br', 15000.00, 'Tecnologia da Informação', 'Indústria', '2024-01-15', '2025-10-05', true),
+('Tech Solutions Ltda', '(11) 98765-4321', 'contato@techsolutions.com.br', 15000.00, 'Tecnologia da Informação', 'Indústria', 'Av. Paulista, 1000 - Bela Vista, São Paulo - SP', '2024-01-15', '2025-10-05', true),
 
 -- Cliente 2
-('Supermercado Bom Preço', '(21) 97654-3210', 'compras@bompreco.com.br', 25000.00, 'Varejo Alimentício', 'Revenda', '2024-02-20', '2025-10-08', true),
+('Supermercado Bom Preço', '(21) 97654-3210', 'compras@bompreco.com.br', 25000.00, 'Varejo Alimentício', 'Revenda', 'Rua das Flores, 250 - Centro, Rio de Janeiro - RJ', '2024-02-20', '2025-10-08', true),
 
 -- Cliente 3
-('Construtora Alicerce S/A', '(85) 96543-2109', 'obras@alicerce.com.br', 50000.00, 'Construção Civil', 'Indústria', '2024-03-10', '2025-10-01', true),
+('Construtora Alicerce S/A', '(85) 96543-2109', 'obras@alicerce.com.br', 50000.00, 'Construção Civil', 'Indústria', 'Av. Beira Mar, 450 - Meireles, Fortaleza - CE', '2024-03-10', '2025-10-01', true),
 
 -- Cliente 4
-('Clínica Saúde Total', '(11) 95432-1098', 'administrativo@saudetotal.com.br', 10000.00, 'Saúde', 'Consumidor', '2024-04-05', '2025-09-28', true),
+('Clínica Saúde Total', '(11) 95432-1098', 'administrativo@saudetotal.com.br', 10000.00, 'Saúde', 'Consumidor', 'R. Dr. Almeida Lima, 120 - Pinheiros, São Paulo - SP', '2024-04-05', '2025-09-28', true),
 
 -- Cliente 5
-('Escola Futuro Brilhante', '(81) 94321-0987', 'diretoria@futurobrilhante.edu.br', 8000.00, 'Educação', 'Consumidor', '2024-05-12', '2025-10-10', true),
+('Escola Futuro Brilhante', '(81) 94321-0987', 'diretoria@futurobrilhante.edu.br', 8000.00, 'Educação', 'Consumidor', 'Av. Professor Morais, 300 - Boa Viagem, Recife - PE', '2024-05-12', '2025-10-10', true),
 
 -- Cliente 6
-('Restaurante Sabor & Arte', '(11) 93210-9876', 'gerencia@saborarte.com.br', 12000.00, 'Alimentação', 'Revenda', '2024-06-18', '2025-09-15', true),
+('Restaurante Sabor & Arte', '(11) 93210-9876', 'gerencia@saborarte.com.br', 12000.00, 'Alimentação', 'Revenda', 'R. do Mercado, 45 - Centro, São Paulo - SP', '2024-06-18', '2025-09-15', true),
 
 -- Cliente 7
-('Indústria Metal Forte', '(48) 92109-8765', 'suprimentos@metalforte.ind.br', 80000.00, 'Indústria Metalúrgica', 'Indústria', '2024-07-22', '2025-10-09', true),
+('Indústria Metal Forte', '(48) 92109-8765', 'suprimentos@metalforte.ind.br', 80000.00, 'Indústria Metalúrgica', 'Indústria', 'Rod. SC-401, Km 12 - Distrito Industrial, Joinville - SC', '2024-07-22', '2025-10-09', true),
 
 -- Cliente 8
-('Farmácia Popular', '(21) 91098-7654', 'comercial@farmaciapopular.com.br', 18000.00, 'Farmacêutico', 'Revenda', '2024-08-14', '2025-10-06', true),
+('Farmácia Popular', '(21) 91098-7654', 'comercial@farmaciapopular.com.br', 18000.00, 'Farmacêutico', 'Revenda', 'Av. Brasil, 1500 - Madureira, Rio de Janeiro - RJ', '2024-08-14', '2025-10-06', true),
 
 -- Cliente 9
-('Academia Corpo e Mente', '(85) 90987-6543', 'recepcao@corpoeamente.com.br', 6000.00, 'Fitness e Bem-estar', 'Consumidor', '2024-09-08', '2025-09-20', true),
+('Academia Corpo e Mente', '(85) 90987-6543', 'recepcao@corpoeamente.com.br', 6000.00, 'Fitness e Bem-estar', 'Consumidor', 'R. do Ginásio, 88 - Aldeota, Fortaleza - CE', '2024-09-08', '2025-09-20', true),
 
 -- Cliente 10
-('Escritório Advocacia & Cia', '(11) 89876-5432', 'contato@advocaciaecia.adv.br', 5000.00, 'Serviços Jurídicos', 'Consumidor', '2024-10-01', '2025-10-07', true);
+('Escritório Advocacia & Cia', '(11) 89876-5432', 'contato@advocaciaecia.adv.br', 5000.00, 'Serviços Jurídicos', 'Consumidor', 'Av. Faria Lima, 2000 - Itaim Bibi, São Paulo - SP', '2024-10-01', '2025-10-07', true);
 
 
 -- =====================================================

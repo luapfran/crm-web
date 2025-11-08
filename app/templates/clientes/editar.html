@@ -10,12 +10,12 @@
                     <h3 class="mb-0">Editar Cliente</h3>
                 </div>
                 <div class="card-body">
-                    <form method="POST" action="{{ url_for('editar_cliente', cliente_id=cliente.id) }}">
+                    <form method="POST" action="{{ url_for('main.editar_cliente', id=cliente.id) }}">
                         {{ form.hidden_tag() }}
                         
                         <div class="mb-3">
                             {{ form.nome.label(class="form-label") }}
-                            {{ form.nome(class="form-control", value=cliente.nome) }}
+                            {{ form.nome(class="form-control") }}
                             {% if form.nome.errors %}
                                 <div class="text-danger">
                                     {% for error in form.nome.errors %}
@@ -27,7 +27,7 @@
 
                         <div class="mb-3">
                             {{ form.email.label(class="form-label") }}
-                            {{ form.email(class="form-control", value=cliente.email) }}
+                            {{ form.email(class="form-control") }}
                             {% if form.email.errors %}
                                 <div class="text-danger">
                                     {% for error in form.email.errors %}
@@ -39,7 +39,7 @@
 
                         <div class="mb-3">
                             {{ form.telefone.label(class="form-label") }}
-                            {{ form.telefone(class="form-control", value=cliente.telefone) }}
+                            {{ form.telefone(class="form-control") }}
                             {% if form.telefone.errors %}
                                 <div class="text-danger">
                                     {% for error in form.telefone.errors %}
@@ -51,7 +51,7 @@
 
                         <div class="mb-3">
                             {{ form.empresa.label(class="form-label") }}
-                            {{ form.empresa(class="form-control", value=cliente.empresa) }}
+                            {{ form.empresa(class="form-control") }}
                             {% if form.empresa.errors %}
                                 <div class="text-danger">
                                     {% for error in form.empresa.errors %}
@@ -62,8 +62,44 @@
                         </div>
 
                         <div class="mb-3">
+                            {{ form.limite_credito.label(class="form-label") }}
+                            {{ form.limite_credito(class="form-control") }}
+                            {% if form.limite_credito.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.limite_credito.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form.area_atuacao.label(class="form-label") }}
+                            {{ form.area_atuacao(class="form-control") }}
+                            {% if form.area_atuacao.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.area_atuacao.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form.canal_vendas.label(class="form-label") }}
+                            {{ form.canal_vendas(class="form-select") }}
+                            {% if form.canal_vendas.errors %}
+                                <div class="text-danger">
+                                    {% for error in form.canal_vendas.errors %}
+                                        <small>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="mb-3">
                             {{ form.endereco.label(class="form-label") }}
-                            {{ form.endereco(class="form-control", rows="3") }}{{ cliente.endereco }}{{ form.endereco() }}
+                            {{ form.endereco(class="form-control", rows="3") }}
                             {% if form.endereco.errors %}
                                 <div class="text-danger">
                                     {% for error in form.endereco.errors %}
@@ -74,10 +110,10 @@
                         </div>
 
                         <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                            <a href="{{ url_for('clientes') }}" class="btn btn-secondary">Cancelar</a>
-                            <a href="{{ url_for('deletar_cliente', cliente_id=cliente.id) }}" 
+                            <a href="{{ url_for('main.listar_clientes') }}" class="btn btn-secondary">Cancelar</a>
+                            <a href="{{ url_for('main.desativar_cliente', id=cliente.id) }}" 
                                class="btn btn-danger"
-                               onclick="return confirm('Tem certeza que deseja excluir este cliente?')">Excluir</a>
+                               onclick="return confirm('Tem certeza que deseja desativar este cliente?')">Desativar</a>
                             {{ form.submit(class="btn btn-warning", value="Atualizar") }}
                         </div>
                     </form>

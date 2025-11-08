@@ -75,7 +75,9 @@ def novo_cliente():
             email=form.email.data,
             limite_credito=form.limite_credito.data,
             area_atuacao=form.area_atuacao.data,
-            canal_vendas=form.canal_vendas.data
+            canal_vendas=form.canal_vendas.data,
+            empresa=form.empresa.data,
+            endereco=form.endereco.data
         )
         
         db.session.add(cliente)
@@ -124,7 +126,9 @@ def editar_cliente(id):
         cliente.limite_credito = form.limite_credito.data
         cliente.area_atuacao = form.area_atuacao.data
         cliente.canal_vendas = form.canal_vendas.data
-        
+        cliente.empresa = form.empresa.data
+        cliente.endereco = form.endereco.data
+
         db.session.commit()
         
         flash(f'Cliente {cliente.nome} atualizado com sucesso!', 'success')

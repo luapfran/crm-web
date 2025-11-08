@@ -9,6 +9,7 @@ class Cliente(db.Model):
     nome = db.Column(db.String(200), nullable=False)
     telefone = db.Column(db.String(20), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
+    empresa = db.Column(db.String(200), nullable=False)
     limite_credito = db.Column(db.Float, default=0.0)
     area_atuacao = db.Column(db.String(100))
     canal_vendas = db.Column(db.String(50))

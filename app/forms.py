@@ -22,6 +22,10 @@ class ClienteForm(FlaskForm):
         Email(message='Email inválido')
     ])
     
+    empresa = StringField('Empresa', validators=[DataRequired(message='Empresa é obrigatória'),
+        Length(min=5, max=200, message='Empresa deve ter entre 5 e 200 caracteres')
+    ])
+    
     limite_credito = FloatField('Limite de Crédito (R$)', validators=[
         DataRequired(message='Limite de crédito é obrigatório'),
         NumberRange(min=0, message='Limite de crédito deve ser positivo')
@@ -30,6 +34,11 @@ class ClienteForm(FlaskForm):
     area_atuacao = StringField('Área de Atuação', validators=[
         DataRequired(message='Área de atuação é obrigatória'),
         Length(max=100)
+    ])
+    
+    endereco = StringField('Endereço', validators=[
+        Length(max=200, message='Endereço deve ter no máximo 200 caracteres'),
+        Optional()
     ])
     
     canal_vendas = SelectField('Canal de Vendas', 

@@ -398,3 +398,110 @@ def api_cliente_detalhes(id):
     
     cliente = Cliente.query.get_or_404(id)
     return jsonify(cliente.to_dict())
+
+@main_bp.route('/admin/popular-banco')
+def popular_banco():
+    """Rota administrativa para popular o banco"""
+    from flask import render_template_string
+    
+    try:
+        # Recriar estrutura
+        db.drop_all()
+        db.create_all()
+        
+        # Criar clientes
+        clientes_data = [
+            Cliente(nome='Tech Solutions Ltda', telefone='(11) 98765-4321', email='contato@techsolutions.com.br', empresa='Tech Solutions', segmento='Tecnologia', observacoes='Cliente Indústria - SP'),
+            Cliente(nome='Supermercado Bom Preço', telefone='(21) 97654-3210', email='compras@bompreco.com.br', empresa='Bom Preço', segmento='Varejo', observacoes='Cliente Revenda - RJ'),
+            Cliente(nome='Construtora Alicerce S/A', telefone='(85) 96543-2109', email='obras@alicerce.com.br', empresa='Alicerce', segmento='Construção', observacoes='Cliente Indústria - CE'),
+            Cliente(nome='Clínica Saúde Total', telefone='(11) 95432-1098', email='administrativo@saudetotal.com.br', empresa='Saúde Total', segmento='Saúde', observacoes='Cliente Consumidor - SP'),
+            Cliente(nome='Escola Futuro Brilhante', telefone='(81) 94321-0987', email='diretoria@futurobrilhante.edu.br', empresa='Futuro Brilhante', segmento='Educação', observacoes='Cliente Consumidor - PE'),
+            Cliente(nome='Restaurante Sabor & Arte', telefone='(11) 93210-9876', email='gerencia@saborarte.com.br', empresa='Sabor & Arte', segmento='Alimentação', observacoes='Cliente Revenda - SP'),
+            Cliente(nome='Indústria Metal Forte', telefone='(48) 92109-8765', email='suprimentos@metalforte.ind.br', empresa='Metal Forte', segmento='Metalúrgica', observacoes='Cliente Indústria - SC'),
+            Cliente(nome='Farmácia Popular', telefone='(21) 91098-7654', email='comercial@farmaciapopular.com.br', empresa='Farmácia Popular', segmento='Farmacêutico', observacoes='Cliente Revenda - RJ'),
+            Cliente(nome='Academia Corpo e Mente', telefone='(85) 90987-6543', email='recepcao@corpoeamente.com.br', empresa='Corpo e Mente', segmento='Fitness', observacoes='Cliente Consumidor - CE'),
+            Cliente(nome='Escritório Advocacia & Cia', telefone='(11) 89876-5432', email='contato@advocaciaecia.adv.br', empresa='Advocacia & Cia', segmento='Jurídico', observacoes='Cliente Consumidor - SP'),
+        ]
+        
+        for cliente in clientes_data:
+            db.session.add(cliente)
+        db.session.commit()
+        
+        # Criar cotações (pegando IDs dos clientes)
+        clientes = Cliente.query.all()
+        
+        cotacoes_data = [
+            Cotacao(cliente_id=clientes[0].id, produto='5 Licenças Software + Computadores + Servidor', valor=45000.00, status='Aprovada', data_cotacao=datetime(2024, 1, 25), observacoes='COT-001A'),
+            Cotacao(cliente_id=clientes[1].id, produto='4 Checkouts + Balanças + Sistema', valor=32000.00, status='Aprovada', data_cotacao=datetime(2024, 2, 28), observacoes='COT-002A'),
+            Cotacao(cliente_id=clientes[2].id, produto='Materiais construção (cimento, areia, brita)', valor=85000.00, status='Aprovada', data_cotacao=datetime(2024, 3, 18), observacoes='COT-003A'),
+            Cotacao(cliente_id=clientes[3].id, produto='Equipamentos hospitalares', valor=18500.00, status='Em Análise', data_cotacao=datetime(2024, 4, 15), observacoes='COT-004E'),
+            Cotacao(cliente_id=clientes[4].id, produto='Equipamentos informática escola', valor=52000.00, status='Aprovada', data_cotacao=datetime(2024, 5, 20), observacoes='COT-005A'),
+            Cotacao(cliente_id=clientes[5].id, produto='Equipamentos cozinha industrial', valor=28000.00, status='Rejeitada', data_cotacao=datetime(2024, 6, 22), observacoes='COT-006R'),
+            Cotacao(cliente_id=clientes[6].id, produto='Contrato anual: aço + alumínio', valor=850000.00, status='Aprovada', data_cotacao=datetime(2024, 8, 1), observacoes='COT-007A'),
+            Cotacao(cliente_id=clientes[7].id, produto='Fornecimento mensal medicamentos', valor=22000.00, status='Aprovada', data_cotacao=datetime(2024, 8, 25), observacoes='COT-008A'),
+            Cotacao(cliente_id=clientes[8].id, produto='Equipamentos academia completa', valor=42000.00, status='Em Análise', data_cotacao=datetime(2024, 9, 20), observacoes='COT-009E'),
+            Cotacao(cliente_id=clientes[9].id, produto='Mobiliário escritório + TI', valor=28500.00, status='Aprovada', data_cotacao=datetime(2024, 10, 5), observacoes='COT-010A'),
+        ]
+        
+        for cotacao in cotacoes_data:
+            db.session.add(cotacao)
+        db.session.commit()
+        
+        # Criar pedidos
+        pedidos_data = [
+            Pedido(cliente_id=clientes[0].id, produto='Software + Computadores', quantidade=1, valor_total=45000.00, status='Concluído', data_pedido=datetime(2024, 2, 1), observacoes='PED-001'),
+            Pedido(cliente_id=clientes[1].id, produto='Checkouts + Sistema', quantidade=1, valor_total=32000.00, status='Concluído', data_pedido=datetime(2024, 3, 5), observacoes='PED-002'),
+            Pedido(cliente_id=clientes[2].id, produto='Materiais 1ª entrega', quantidade=1, valor_total=17000.00, status='Concluído', data_pedido=datetime(2024, 3, 25), observacoes='PED-003A'),
+            Pedido(cliente_id=clientes[2].id, produto='Materiais 2ª entrega', quantidade=1, valor_total=17000.00, status='Em Processamento', data_pedido=datetime(2024, 4, 10), observacoes='PED-003B'),
+            Pedido(cliente_id=clientes[4].id, produto='Equipamentos escola', quantidade=1, valor_total=52000.00, status='Em Processamento', data_pedido=datetime(2024, 6, 25), observacoes='PED-005'),
+            Pedido(cliente_id=clientes[6].id, produto='Fornecimento Agosto', quantidade=1, valor_total=70000.00, status='Concluído', data_pedido=datetime(2024, 8, 5), observacoes='PED-007-08'),
+            Pedido(cliente_id=clientes[6].id, produto='Fornecimento Setembro', quantidade=1, valor_total=70000.00, status='Concluído', data_pedido=datetime(2024, 9, 5), observacoes='PED-007-09'),
+            Pedido(cliente_id=clientes[6].id, produto='Fornecimento Outubro', quantidade=1, valor_total=70000.00, status='Em Processamento', data_pedido=datetime(2024, 10, 5), observacoes='PED-007-10'),
+            Pedido(cliente_id=clientes[7].id, produto='Medicamentos Setembro', quantidade=1, valor_total=22000.00, status='Concluído', data_pedido=datetime(2024, 9, 1), observacoes='PED-008-09'),
+            Pedido(cliente_id=clientes[7].id, produto='Medicamentos Outubro', quantidade=1, valor_total=22000.00, status='Pendente', data_pedido=datetime(2024, 10, 1), observacoes='PED-008-10'),
+            Pedido(cliente_id=clientes[9].id, produto='Mobiliário + TI', quantidade=1, valor_total=28500.00, status='Em Processamento', data_pedido=datetime(2024, 10, 8), observacoes='PED-010'),
+        ]
+        
+        for pedido in pedidos_data:
+            db.session.add(pedido)
+        db.session.commit()
+        
+        # Contar
+        total_clientes = Cliente.query.count()
+        total_cotacoes = Cotacao.query.count()
+        total_pedidos = Pedido.query.count()
+        
+        html = f"""
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Banco Populado</title>
+            <meta charset="utf-8">
+            <style>
+                body {{ font-family: Arial, sans-serif; max-width: 800px; margin: 50px auto; padding: 20px; background: #f5f5f5; }}
+                .success {{ background: #d4edda; border: 1px solid #c3e6cb; color: #155724; padding: 20px; border-radius: 5px; }}
+                .stats {{ background: white; padding: 20px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-top: 20px; }}
+                .btn {{ display: inline-block; padding: 10px 20px; background: #007bff; color: white !important; text-decoration: none; border-radius: 5px; margin-top: 20px; }}
+            </style>
+        </head>
+        <body>
+            <div class="success">
+                <h1>✅ Banco Populado com Sucesso!</h1>
+            </div>
+            <div class="stats">
+                <h2>📊 Dados Criados:</h2>
+                <ul>
+                    <li><strong>{total_clientes}</strong> clientes</li>
+                    <li><strong>{total_cotacoes}</strong> cotações</li>
+                    <li><strong>{total_pedidos}</strong> pedidos</li>
+                </ul>
+                <a href="/" class="btn">Ir para o Dashboard</a>
+            </div>
+        </body>
+        </html>
+        """
+        
+        return render_template_string(html)
+        
+    except Exception as e:
+        return f"<h1>Erro:</h1><pre>{str(e)}</pre>", 500

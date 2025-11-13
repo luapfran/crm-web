@@ -398,104 +398,443 @@ def api_cliente_detalhes(id):
     
     cliente = Cliente.query.get_or_404(id)
     return jsonify(cliente.to_dict())
+# ==================================================
+# ROTA CORRIGIDA PARA POPULAR BANCO
+# Cole este código no FINAL do arquivo app/controllers.py
+# ==================================================
 
 @main_bp.route('/admin/popular-banco')
 def popular_banco():
-    """Rota administrativa para popular o banco"""
+    """Rota administrativa para popular o banco - VERSÃO CORRIGIDA"""
     from flask import render_template_string
+    from datetime import datetime
     
     try:
         # Recriar estrutura
         db.drop_all()
         db.create_all()
         
-        # Criar clientes
+        # Criar clientes - APENAS com campos que existem
         clientes_data = [
-            Cliente(nome='Tech Solutions Ltda', telefone='(11) 98765-4321', email='contato@techsolutions.com.br', empresa='Tech Solutions', segmento='Tecnologia', observacoes='Cliente Indústria - SP'),
-            Cliente(nome='Supermercado Bom Preço', telefone='(21) 97654-3210', email='compras@bompreco.com.br', empresa='Bom Preço', segmento='Varejo', observacoes='Cliente Revenda - RJ'),
-            Cliente(nome='Construtora Alicerce S/A', telefone='(85) 96543-2109', email='obras@alicerce.com.br', empresa='Alicerce', segmento='Construção', observacoes='Cliente Indústria - CE'),
-            Cliente(nome='Clínica Saúde Total', telefone='(11) 95432-1098', email='administrativo@saudetotal.com.br', empresa='Saúde Total', segmento='Saúde', observacoes='Cliente Consumidor - SP'),
-            Cliente(nome='Escola Futuro Brilhante', telefone='(81) 94321-0987', email='diretoria@futurobrilhante.edu.br', empresa='Futuro Brilhante', segmento='Educação', observacoes='Cliente Consumidor - PE'),
-            Cliente(nome='Restaurante Sabor & Arte', telefone='(11) 93210-9876', email='gerencia@saborarte.com.br', empresa='Sabor & Arte', segmento='Alimentação', observacoes='Cliente Revenda - SP'),
-            Cliente(nome='Indústria Metal Forte', telefone='(48) 92109-8765', email='suprimentos@metalforte.ind.br', empresa='Metal Forte', segmento='Metalúrgica', observacoes='Cliente Indústria - SC'),
-            Cliente(nome='Farmácia Popular', telefone='(21) 91098-7654', email='comercial@farmaciapopular.com.br', empresa='Farmácia Popular', segmento='Farmacêutico', observacoes='Cliente Revenda - RJ'),
-            Cliente(nome='Academia Corpo e Mente', telefone='(85) 90987-6543', email='recepcao@corpoeamente.com.br', empresa='Corpo e Mente', segmento='Fitness', observacoes='Cliente Consumidor - CE'),
-            Cliente(nome='Escritório Advocacia & Cia', telefone='(11) 89876-5432', email='contato@advocaciaecia.adv.br', empresa='Advocacia & Cia', segmento='Jurídico', observacoes='Cliente Consumidor - SP'),
+            {
+                'nome': 'Tech Solutions Ltda',
+                'telefone': '(11) 98765-4321',
+                'email': 'contato@techsolutions.com.br',
+                'empresa': 'Tech Solutions',
+                'observacoes': 'Tecnologia da Informação - Indústria - Limite: R$ 15.000 - São Paulo/SP'
+            },
+            {
+                'nome': 'Supermercado Bom Preço',
+                'telefone': '(21) 97654-3210',
+                'email': 'compras@bompreco.com.br',
+                'empresa': 'Bom Preço',
+                'observacoes': 'Varejo Alimentício - Revenda - Limite: R$ 25.000 - Rio de Janeiro/RJ'
+            },
+            {
+                'nome': 'Construtora Alicerce S/A',
+                'telefone': '(85) 96543-2109',
+                'email': 'obras@alicerce.com.br',
+                'empresa': 'Alicerce',
+                'observacoes': 'Construção Civil - Indústria - Limite: R$ 50.000 - Fortaleza/CE'
+            },
+            {
+                'nome': 'Clínica Saúde Total',
+                'telefone': '(11) 95432-1098',
+                'email': 'administrativo@saudetotal.com.br',
+                'empresa': 'Saúde Total',
+                'observacoes': 'Saúde - Consumidor - Limite: R$ 10.000 - São Paulo/SP'
+            },
+            {
+                'nome': 'Escola Futuro Brilhante',
+                'telefone': '(81) 94321-0987',
+                'email': 'diretoria@futurobrilhante.edu.br',
+                'empresa': 'Futuro Brilhante',
+                'observacoes': 'Educação - Consumidor - Limite: R$ 8.000 - Recife/PE'
+            },
+            {
+                'nome': 'Restaurante Sabor & Arte',
+                'telefone': '(11) 93210-9876',
+                'email': 'gerencia@saborarte.com.br',
+                'empresa': 'Sabor & Arte',
+                'observacoes': 'Alimentação - Revenda - Limite: R$ 12.000 - São Paulo/SP'
+            },
+            {
+                'nome': 'Indústria Metal Forte',
+                'telefone': '(48) 92109-8765',
+                'email': 'suprimentos@metalforte.ind.br',
+                'empresa': 'Metal Forte',
+                'observacoes': 'Indústria Metalúrgica - Indústria - Limite: R$ 80.000 - Joinville/SC'
+            },
+            {
+                'nome': 'Farmácia Popular',
+                'telefone': '(21) 91098-7654',
+                'email': 'comercial@farmaciapopular.com.br',
+                'empresa': 'Farmácia Popular',
+                'observacoes': 'Farmacêutico - Revenda - Limite: R$ 18.000 - Rio de Janeiro/RJ'
+            },
+            {
+                'nome': 'Academia Corpo e Mente',
+                'telefone': '(85) 90987-6543',
+                'email': 'recepcao@corpoeamente.com.br',
+                'empresa': 'Corpo e Mente',
+                'observacoes': 'Fitness e Bem-estar - Consumidor - Limite: R$ 6.000 - Fortaleza/CE'
+            },
+            {
+                'nome': 'Escritório Advocacia & Cia',
+                'telefone': '(11) 89876-5432',
+                'email': 'contato@advocaciaecia.adv.br',
+                'empresa': 'Advocacia & Cia',
+                'observacoes': 'Serviços Jurídicos - Consumidor - Limite: R$ 5.000 - São Paulo/SP'
+            }
         ]
         
-        for cliente in clientes_data:
+        # Criar clientes
+        for data in clientes_data:
+            cliente = Cliente(**data)
             db.session.add(cliente)
         db.session.commit()
         
-        # Criar cotações (pegando IDs dos clientes)
+        # Buscar clientes criados
         clientes = Cliente.query.all()
         
+        # Criar cotações
         cotacoes_data = [
-            Cotacao(cliente_id=clientes[0].id, produto='5 Licenças Software + Computadores + Servidor', valor=45000.00, status='Aprovada', data_cotacao=datetime(2024, 1, 25), observacoes='COT-001A'),
-            Cotacao(cliente_id=clientes[1].id, produto='4 Checkouts + Balanças + Sistema', valor=32000.00, status='Aprovada', data_cotacao=datetime(2024, 2, 28), observacoes='COT-002A'),
-            Cotacao(cliente_id=clientes[2].id, produto='Materiais construção (cimento, areia, brita)', valor=85000.00, status='Aprovada', data_cotacao=datetime(2024, 3, 18), observacoes='COT-003A'),
-            Cotacao(cliente_id=clientes[3].id, produto='Equipamentos hospitalares', valor=18500.00, status='Em Análise', data_cotacao=datetime(2024, 4, 15), observacoes='COT-004E'),
-            Cotacao(cliente_id=clientes[4].id, produto='Equipamentos informática escola', valor=52000.00, status='Aprovada', data_cotacao=datetime(2024, 5, 20), observacoes='COT-005A'),
-            Cotacao(cliente_id=clientes[5].id, produto='Equipamentos cozinha industrial', valor=28000.00, status='Rejeitada', data_cotacao=datetime(2024, 6, 22), observacoes='COT-006R'),
-            Cotacao(cliente_id=clientes[6].id, produto='Contrato anual: aço + alumínio', valor=850000.00, status='Aprovada', data_cotacao=datetime(2024, 8, 1), observacoes='COT-007A'),
-            Cotacao(cliente_id=clientes[7].id, produto='Fornecimento mensal medicamentos', valor=22000.00, status='Aprovada', data_cotacao=datetime(2024, 8, 25), observacoes='COT-008A'),
-            Cotacao(cliente_id=clientes[8].id, produto='Equipamentos academia completa', valor=42000.00, status='Em Análise', data_cotacao=datetime(2024, 9, 20), observacoes='COT-009E'),
-            Cotacao(cliente_id=clientes[9].id, produto='Mobiliário escritório + TI', valor=28500.00, status='Aprovada', data_cotacao=datetime(2024, 10, 5), observacoes='COT-010A'),
+            {
+                'cliente_id': clientes[0].id,
+                'produto': '5 Licenças Software + 10 Computadores + Servidor + Instalação + Treinamento (40h)',
+                'valor': 45000.00,
+                'status': 'Aprovada',
+                'data_cotacao': datetime(2024, 1, 25),
+                'observacoes': 'COT-001A - Pagamento em 3x sem juros. Garantia de 12 meses.'
+            },
+            {
+                'cliente_id': clientes[1].id,
+                'produto': '4 Checkouts completos + 2 Balanças digitais + Sistema gestão + 3 Câmeras',
+                'valor': 32000.00,
+                'status': 'Aprovada',
+                'data_cotacao': datetime(2024, 2, 28),
+                'observacoes': 'COT-002A - Frete incluso. Instalação em até 15 dias úteis.'
+            },
+            {
+                'cliente_id': clientes[2].id,
+                'produto': '500 sacos cimento + 200m³ areia + 150m³ brita + 50t ferro',
+                'valor': 85000.00,
+                'status': 'Aprovada',
+                'data_cotacao': datetime(2024, 3, 18),
+                'observacoes': 'COT-003A - Entregas quinzenais. Pagamento 30 dias após cada entrega.'
+            },
+            {
+                'cliente_id': clientes[3].id,
+                'produto': '2 Macas hospitalares elétricas + Autoclave 21L + 5 Cadeiras + Armário',
+                'valor': 18500.00,
+                'status': 'Em Análise',
+                'data_cotacao': datetime(2024, 4, 15),
+                'observacoes': 'COT-004E - Valores válidos por 30 dias. Frete grátis para SP.'
+            },
+            {
+                'cliente_id': clientes[4].id,
+                'produto': '30 Computadores + Projetor Full HD + 5 Impressoras + Software educacional',
+                'valor': 52000.00,
+                'status': 'Aprovada',
+                'data_cotacao': datetime(2024, 5, 20),
+                'observacoes': 'COT-005A - Desconto especial para educação. Garantia 24 meses.'
+            },
+            {
+                'cliente_id': clientes[5].id,
+                'produto': 'Forno industrial + Fogão 6 bocas + 2 Fritadeiras + Refrigerador 4 portas',
+                'valor': 28000.00,
+                'status': 'Rejeitada',
+                'data_cotacao': datetime(2024, 6, 22),
+                'observacoes': 'COT-006R - Cliente optou por fornecedor concorrente.'
+            },
+            {
+                'cliente_id': clientes[6].id,
+                'produto': 'Contrato anual: 100t aço carbono/mês + 50t alumínio/mês',
+                'valor': 850000.00,
+                'status': 'Aprovada',
+                'data_cotacao': datetime(2024, 8, 1),
+                'observacoes': 'COT-007A - Contrato 12 meses renováveis. Reajuste semestral IPCA.'
+            },
+            {
+                'cliente_id': clientes[7].id,
+                'produto': 'Fornecimento mensal: medicamentos + higiene + suplementos',
+                'valor': 22000.00,
+                'status': 'Aprovada',
+                'data_cotacao': datetime(2024, 8, 25),
+                'observacoes': 'COT-008A - Fornecimento mensal renovável. Primeira entrega em 10 dias.'
+            },
+            {
+                'cliente_id': clientes[8].id,
+                'produto': '10 Esteiras + 5 Bicicletas + Kit pesos + 3 Aparelhos musculação',
+                'valor': 42000.00,
+                'status': 'Em Análise',
+                'data_cotacao': datetime(2024, 9, 20),
+                'observacoes': 'COT-009E - Parcelamento em até 10x. Garantia 18 meses.'
+            },
+            {
+                'cliente_id': clientes[9].id,
+                'produto': '8 Mesas executivas + 8 Cadeiras + 5 Armários + 5 Computadores + Rede',
+                'valor': 28500.00,
+                'status': 'Aprovada',
+                'data_cotacao': datetime(2024, 10, 5),
+                'observacoes': 'COT-010A - Montagem e instalação incluídas. Entrega em 20 dias úteis.'
+            },
+            {
+                'cliente_id': clientes[0].id,
+                'produto': 'Upgrade Enterprise + 5 Licenças adicionais + BI + Consultoria (80h)',
+                'valor': 28000.00,
+                'status': 'Em Análise',
+                'data_cotacao': datetime(2025, 10, 1),
+                'observacoes': 'COT-011E - Proposta de expansão do sistema atual.'
+            }
         ]
         
-        for cotacao in cotacoes_data:
+        for data in cotacoes_data:
+            cotacao = Cotacao(**data)
             db.session.add(cotacao)
         db.session.commit()
         
         # Criar pedidos
         pedidos_data = [
-            Pedido(cliente_id=clientes[0].id, produto='Software + Computadores', quantidade=1, valor_total=45000.00, status='Concluído', data_pedido=datetime(2024, 2, 1), observacoes='PED-001'),
-            Pedido(cliente_id=clientes[1].id, produto='Checkouts + Sistema', quantidade=1, valor_total=32000.00, status='Concluído', data_pedido=datetime(2024, 3, 5), observacoes='PED-002'),
-            Pedido(cliente_id=clientes[2].id, produto='Materiais 1ª entrega', quantidade=1, valor_total=17000.00, status='Concluído', data_pedido=datetime(2024, 3, 25), observacoes='PED-003A'),
-            Pedido(cliente_id=clientes[2].id, produto='Materiais 2ª entrega', quantidade=1, valor_total=17000.00, status='Em Processamento', data_pedido=datetime(2024, 4, 10), observacoes='PED-003B'),
-            Pedido(cliente_id=clientes[4].id, produto='Equipamentos escola', quantidade=1, valor_total=52000.00, status='Em Processamento', data_pedido=datetime(2024, 6, 25), observacoes='PED-005'),
-            Pedido(cliente_id=clientes[6].id, produto='Fornecimento Agosto', quantidade=1, valor_total=70000.00, status='Concluído', data_pedido=datetime(2024, 8, 5), observacoes='PED-007-08'),
-            Pedido(cliente_id=clientes[6].id, produto='Fornecimento Setembro', quantidade=1, valor_total=70000.00, status='Concluído', data_pedido=datetime(2024, 9, 5), observacoes='PED-007-09'),
-            Pedido(cliente_id=clientes[6].id, produto='Fornecimento Outubro', quantidade=1, valor_total=70000.00, status='Em Processamento', data_pedido=datetime(2024, 10, 5), observacoes='PED-007-10'),
-            Pedido(cliente_id=clientes[7].id, produto='Medicamentos Setembro', quantidade=1, valor_total=22000.00, status='Concluído', data_pedido=datetime(2024, 9, 1), observacoes='PED-008-09'),
-            Pedido(cliente_id=clientes[7].id, produto='Medicamentos Outubro', quantidade=1, valor_total=22000.00, status='Pendente', data_pedido=datetime(2024, 10, 1), observacoes='PED-008-10'),
-            Pedido(cliente_id=clientes[9].id, produto='Mobiliário + TI', quantidade=1, valor_total=28500.00, status='Em Processamento', data_pedido=datetime(2024, 10, 8), observacoes='PED-010'),
+            {
+                'cliente_id': clientes[0].id,
+                'produto': '5 Licenças Software + 10 Computadores + Servidor',
+                'quantidade': 1,
+                'valor_total': 45000.00,
+                'status': 'Concluído',
+                'data_pedido': datetime(2024, 2, 1),
+                'observacoes': 'PED-001 - Cliente muito satisfeito. Entregue em 22/02/2024.'
+            },
+            {
+                'cliente_id': clientes[1].id,
+                'produto': '4 Checkouts + 2 Balanças + Sistema + 3 Câmeras',
+                'quantidade': 1,
+                'valor_total': 32000.00,
+                'status': 'Concluído',
+                'data_pedido': datetime(2024, 3, 5),
+                'observacoes': 'PED-002 - Instalação fora do horário. Entregue 20/03/2024.'
+            },
+            {
+                'cliente_id': clientes[2].id,
+                'produto': '1ª entrega: 100 sacos cimento + 40m³ areia + 30m³ brita + 10t ferro',
+                'quantidade': 1,
+                'valor_total': 17000.00,
+                'status': 'Concluído',
+                'data_pedido': datetime(2024, 3, 25),
+                'observacoes': 'PED-003A - Primeira de cinco entregas. Entregue 03/04/2024.'
+            },
+            {
+                'cliente_id': clientes[2].id,
+                'produto': '2ª entrega: 100 sacos cimento + 40m³ areia + 30m³ brita + 10t ferro',
+                'quantidade': 1,
+                'valor_total': 17000.00,
+                'status': 'Em Processamento',
+                'data_pedido': datetime(2024, 4, 10),
+                'observacoes': 'PED-003B - Previsão de entrega: 20/04/2024.'
+            },
+            {
+                'cliente_id': clientes[4].id,
+                'produto': '30 Computadores + Projetor + 5 Impressoras + Software',
+                'quantidade': 1,
+                'valor_total': 52000.00,
+                'status': 'Em Processamento',
+                'data_pedido': datetime(2024, 6, 25),
+                'observacoes': 'PED-005 - Aguardando logística. Previsão: 20/07/2024.'
+            },
+            {
+                'cliente_id': clientes[6].id,
+                'produto': 'Fornecimento Agosto/2024: 100t aço carbono + 50t alumínio',
+                'quantidade': 1,
+                'valor_total': 70000.00,
+                'status': 'Concluído',
+                'data_pedido': datetime(2024, 8, 5),
+                'observacoes': 'PED-007-08 - Entregue 28/08/2024. Qualidade mantida.'
+            },
+            {
+                'cliente_id': clientes[6].id,
+                'produto': 'Fornecimento Setembro/2024: 100t aço carbono + 50t alumínio',
+                'quantidade': 1,
+                'valor_total': 70000.00,
+                'status': 'Concluído',
+                'data_pedido': datetime(2024, 9, 5),
+                'observacoes': 'PED-007-09 - Entregue 29/09/2024. Doc fiscal enviada.'
+            },
+            {
+                'cliente_id': clientes[6].id,
+                'produto': 'Fornecimento Outubro/2024: 100t aço carbono + 50t alumínio',
+                'quantidade': 1,
+                'valor_total': 70000.00,
+                'status': 'Em Processamento',
+                'data_pedido': datetime(2024, 10, 5),
+                'observacoes': 'PED-007-10 - Carga despachada. Previsão: 30/10/2024.'
+            },
+            {
+                'cliente_id': clientes[7].id,
+                'produto': 'Fornecimento Set/2024: Medicamentos + Higiene + Suplementos',
+                'quantidade': 1,
+                'valor_total': 22000.00,
+                'status': 'Concluído',
+                'data_pedido': datetime(2024, 9, 1),
+                'observacoes': 'PED-008-09 - Primeira entrega contrato. Entregue 08/09/2024.'
+            },
+            {
+                'cliente_id': clientes[7].id,
+                'produto': 'Fornecimento Out/2024: Medicamentos + Higiene + Suplementos',
+                'quantidade': 1,
+                'valor_total': 22000.00,
+                'status': 'Pendente',
+                'data_pedido': datetime(2024, 10, 1),
+                'observacoes': 'PED-008-10 - Separação em andamento. Previsão: 10/10/2024.'
+            },
+            {
+                'cliente_id': clientes[9].id,
+                'produto': '8 Mesas + 8 Cadeiras + 5 Armários + 5 PCs + 2 Impressoras + Rede',
+                'quantidade': 1,
+                'valor_total': 28500.00,
+                'status': 'Em Processamento',
+                'data_pedido': datetime(2024, 10, 8),
+                'observacoes': 'PED-010 - Móveis em produção. Instalação: 28/10/2024.'
+            }
         ]
         
-        for pedido in pedidos_data:
+        for data in pedidos_data:
+            pedido = Pedido(**data)
             db.session.add(pedido)
         db.session.commit()
         
-        # Contar
+        # Contar totais
         total_clientes = Cliente.query.count()
         total_cotacoes = Cotacao.query.count()
         total_pedidos = Pedido.query.count()
         
+        # HTML de sucesso
         html = f"""
         <!DOCTYPE html>
         <html>
         <head>
-            <title>Banco Populado</title>
+            <title>Banco Populado com Sucesso</title>
             <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1">
             <style>
-                body {{ font-family: Arial, sans-serif; max-width: 800px; margin: 50px auto; padding: 20px; background: #f5f5f5; }}
-                .success {{ background: #d4edda; border: 1px solid #c3e6cb; color: #155724; padding: 20px; border-radius: 5px; }}
-                .stats {{ background: white; padding: 20px; border-radius: 5px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-top: 20px; }}
-                .btn {{ display: inline-block; padding: 10px 20px; background: #007bff; color: white !important; text-decoration: none; border-radius: 5px; margin-top: 20px; }}
+                * {{ margin: 0; padding: 0; box-sizing: border-box; }}
+                body {{ 
+                    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                    min-height: 100vh;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    padding: 20px;
+                }}
+                .container {{
+                    background: white;
+                    border-radius: 20px;
+                    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+                    max-width: 600px;
+                    width: 100%;
+                    overflow: hidden;
+                }}
+                .header {{
+                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                    color: white;
+                    padding: 40px 30px;
+                    text-align: center;
+                }}
+                .header h1 {{
+                    font-size: 2.5em;
+                    margin-bottom: 10px;
+                }}
+                .header p {{
+                    opacity: 0.9;
+                    font-size: 1.1em;
+                }}
+                .content {{
+                    padding: 40px 30px;
+                }}
+                .stats {{
+                    background: #f8f9fa;
+                    border-radius: 10px;
+                    padding: 25px;
+                    margin-bottom: 30px;
+                }}
+                .stats h2 {{
+                    color: #333;
+                    margin-bottom: 20px;
+                    font-size: 1.5em;
+                }}
+                .stat-item {{
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    padding: 15px 0;
+                    border-bottom: 1px solid #e0e0e0;
+                }}
+                .stat-item:last-child {{
+                    border-bottom: none;
+                }}
+                .stat-label {{
+                    color: #666;
+                    font-size: 1.1em;
+                }}
+                .stat-value {{
+                    font-size: 1.8em;
+                    font-weight: bold;
+                    color: #667eea;
+                }}
+                .btn {{
+                    display: block;
+                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                    color: white;
+                    text-decoration: none;
+                    padding: 15px 30px;
+                    border-radius: 10px;
+                    text-align: center;
+                    font-size: 1.1em;
+                    font-weight: 600;
+                    transition: transform 0.2s, box-shadow 0.2s;
+                }}
+                .btn:hover {{
+                    transform: translateY(-2px);
+                    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+                }}
+                .footer {{
+                    text-align: center;
+                    padding: 20px;
+                    color: #999;
+                    font-size: 0.9em;
+                }}
             </style>
         </head>
         <body>
-            <div class="success">
-                <h1>✅ Banco Populado com Sucesso!</h1>
-            </div>
-            <div class="stats">
-                <h2>📊 Dados Criados:</h2>
-                <ul>
-                    <li><strong>{total_clientes}</strong> clientes</li>
-                    <li><strong>{total_cotacoes}</strong> cotações</li>
-                    <li><strong>{total_pedidos}</strong> pedidos</li>
-                </ul>
-                <a href="/" class="btn">Ir para o Dashboard</a>
+            <div class="container">
+                <div class="header">
+                    <h1>✅ Sucesso!</h1>
+                    <p>Banco de dados populado com dados fictícios</p>
+                </div>
+                
+                <div class="content">
+                    <div class="stats">
+                        <h2>📊 Dados Criados</h2>
+                        <div class="stat-item">
+                            <span class="stat-label">👥 Clientes</span>
+                            <span class="stat-value">{total_clientes}</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">📋 Cotações</span>
+                            <span class="stat-value">{total_cotacoes}</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">🛒 Pedidos</span>
+                            <span class="stat-value">{total_pedidos}</span>
+                        </div>
+                    </div>
+                    
+                    <a href="/" class="btn">🏠 Ir para o Dashboard</a>
+                </div>
+                
+                <div class="footer">
+                    Sistema CRM - Dados de exemplo para testes
+                </div>
             </div>
         </body>
         </html>
@@ -504,4 +843,28 @@ def popular_banco():
         return render_template_string(html)
         
     except Exception as e:
-        return f"<h1>Erro:</h1><pre>{str(e)}</pre>", 500
+        # HTML de erro
+        error_html = f"""
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Erro ao Popular Banco</title>
+            <meta charset="utf-8">
+            <style>
+                body {{ font-family: Arial, sans-serif; max-width: 800px; margin: 50px auto; padding: 20px; }}
+                .error {{ background: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; padding: 20px; border-radius: 5px; }}
+                pre {{ background: #f4f4f4; padding: 15px; border-radius: 5px; overflow-x: auto; }}
+                .btn {{ display: inline-block; margin-top: 20px; padding: 10px 20px; background: #007bff; color: white; text-decoration: none; border-radius: 5px; }}
+            </style>
+        </head>
+        <body>
+            <div class="error">
+                <h1>❌ Erro ao Popular Banco</h1>
+                <p><strong>Mensagem de erro:</strong></p>
+                <pre>{str(e)}</pre>
+            </div>
+            <a href="/" class="btn">Voltar ao Dashboard</a>
+        </body>
+        </html>
+        """
+        return render_template_string(error_html), 500
